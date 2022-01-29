@@ -155,6 +155,7 @@ class pet:
         self.prevMousePos = pyautogui.position()
         
         # self.window.bind('<Control-x>', self.exit)
+        self.window.bind('<Control-x>', self.exit)
         # self.label.protocol("WM_DELETE_WINDOW", self.exit)
 
 
@@ -162,11 +163,9 @@ class pet:
         self.window.after(0, self.update)
         self.window.mainloop()
 
-    # def exit(self, event):
-    #     try:
-    #         self.window.destroy()
-    #     except(RuntimeError):
-    #         pass
+    def exit(self, event):
+        self.sound_thread.join()
+        self.window.destroy()
 
     def change_state(self):
         # self.state = 0
