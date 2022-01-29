@@ -1,7 +1,6 @@
 import tkinter as tk
 import time
 import winsound
-import pyautogui
 
 class pet:
     def __init__(self):
