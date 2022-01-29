@@ -6,6 +6,9 @@ import questReminders
 import pathlib
 pathlib.Path(__file__).parent.resolve()
 
+import pathlib
+pathlib.Path(__file__).parent.resolve()
+
 class pet:
     def __init__(self):
         # create a window
