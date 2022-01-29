@@ -105,7 +105,13 @@ class pet:
             "You: I think o\" go for a walk \n DesktopKnight: You're not folling anyone!",
             "Your mother was a hamster and your father smelt of elderberries!",
         ]
-
+        self.sounds = [
+            "bitelegs.wav",
+            "fart.wav",
+            "hamster.wav",
+            "sod.wav",
+            "privparts.wav",
+        ]
         # timestamp to check whether to advance frame
         self.timestamp = time.time()
 
@@ -240,8 +246,9 @@ class pet:
         if not self.sound_thread.is_alive() and not self.chasing:
             # if not self.chasing:
             self.chasing = True
+            sound = random.choice(self.sounds)
             self.sound_thread = threading.Thread(
-                target=self.play, args=("bitelegs.wav",)
+                target=self.play, args=(sound,)
             )
             self.sound_thread.start()
         if distance < self.attack_distance:
