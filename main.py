@@ -3,7 +3,8 @@ import tkinter as tk
 import time
 import random
 import winsound
-#import questReminders
+
+# import questReminders
 import math
 import pathlib
 import pyautogui
@@ -12,7 +13,7 @@ import threading
 
 pathlib.Path(__file__).parent.resolve()
 
-pathname = "swamp/Lib/DesktopKnight/"
+pathname = ""
 
 
 class pet:
@@ -147,7 +148,7 @@ class pet:
 
     def change_state(self):
         # self.state = 0
-        #self.state = random.choice(list(self.states))
+        # self.state = random.choice(list(self.states))
 
         dx = self.mouse_x - self.center[0]
         dy = self.mouse_y - self.center[1]
@@ -194,8 +195,6 @@ class pet:
                     self.cooldown_curr = 0
             else:
                 self.state = "idle_right"
-        
-            
 
     def movement(self):
         # if self.state == "running_right":
@@ -221,11 +220,12 @@ class pet:
             )
             self.sound_thread.start()
         if distance < self.attack_distance:
-            if not self.sound_thread.is_alive():
-                self.sound_thread = threading.Thread(
-                    target=self.play, args=("mp_grail.wav",)
-                )
-                self.sound_thread.start()
+            # self.sound_thread = threading.Thread(
+            #     target=self.play, args=("mp_grail.wav",)
+            # )
+            # self.sound_thread.start()
+            self.chasing = False
+           
         else:
             try:
                 dx /= distance
