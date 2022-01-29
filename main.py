@@ -9,17 +9,20 @@ class pet:
         # create a window
         self.window = tk.Tk()
         self.state = 0
-        #self.state = random.randrange(1,8,1)
+        # self.state = random.randrange(1,8,1)
         self.cycle = 0
         # dictionary to hold gifs:
         # indexed 0-8, holds a tuple ([photoimage],num of frames)
         self.states = dict()
-        self.states[0] = ([
-            tk.PhotoImage(
-                file="swamp\Lib\DesktopKnight\Images\knight_drinking.gif", format="gif -index %i" % (i)
-            )
-            for i in range(31)
-        ], 32) 
+        self.states[0] = (
+            [
+                tk.PhotoImage(
+                    file="Images\knight_drinking.gif", format="gif -index %i" % (i)
+                )
+                for i in range(31)
+            ],
+            32,
+        )
         self.frame_index = 0
         self.img = self.states[0][0][self.frame_index]
 
@@ -66,11 +69,11 @@ class pet:
 
     def change_state(self):
         self.state = 0
-        #self.state = random.randrange(1,8,1)
+        # self.state = random.randrange(1,8,1)
 
     def update(self):
-        self.x += 1 
-                
+        self.x += 1
+
         if time.time() > self.timestamp + 0.05:
             self.timestamp = time.time()
             # advance the frame by one, wrap back to 0 at the end
@@ -95,7 +98,10 @@ class pet:
         self.window.after(10, self.update)
 
     def play(self, filename):
-            winsound.PlaySound('Sounds/' + filename, winsound.SND_ALIAS | winsound.SND_ASYNC)
+        winsound.PlaySound(
+            "Sounds/" + filename, winsound.SND_ALIAS | winsound.SND_ASYNC
+        )
+
 
 if __name__ == "__main__":
     pet()
