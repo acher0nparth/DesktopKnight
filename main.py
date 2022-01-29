@@ -3,7 +3,7 @@ import tkinter as tk
 import time
 import random
 import winsound
-#import questReminders
+import questReminders
 import math
 import pathlib
 import pyautogui
@@ -12,7 +12,7 @@ import threading
 
 pathlib.Path(__file__).parent.resolve()
 
-pathname = "swamp/Lib/DesktopKnight/"
+pathname = ""
 
 
 class pet:
