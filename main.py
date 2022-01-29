@@ -142,14 +142,18 @@ class pet:
         #     self.x += 5
         # elif self.state == "running_left":
         #     self.x -= 5
+
         dx = self.mouse_x - self.x
         dy = self.mouse_y - self.y
+        if dy < 200 and dx < 200:
+            self.chase(dx, dy)
+
+    def chase(self, dx, dy):
         distance = math.sqrt(dx*dx + dy*dy)
         dx /= distance
         dy /= distance
         self.x += round(dx)
-        self.y += round(dy)
-        
+        self.y += round(dy)  
 
     def update(self):
         # self.x += 1
