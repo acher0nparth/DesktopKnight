@@ -5,7 +5,7 @@ import tkinter as tk
 import time
 import random
 import winsound
-import questReminders
+#import questReminders
 import math
 import pathlib
 import pyautogui
@@ -14,7 +14,7 @@ import threading
 
 pathlib.Path(__file__).parent.resolve()
 
-pathname = ""
+pathname = "swamp/Lib/DesktopKnight/"
 
 
 class pet:
@@ -29,6 +29,8 @@ class pet:
         self.aggro_curr = 0
         self.chase_distance = 600
         self.attack_distance = 90
+        self.exit_flag = False
+        self.exit_frame = 0
         # dictionary to hold gifs:
         # indexed 0-8, holds a tuple ([photoimage],num of frames)
         self.states = dict()
@@ -91,6 +93,26 @@ class pet:
             ],
             10,
         )
+        self.states["dead_forward_left"] = (
+            [
+                tk.PhotoImage(
+                    file=pathname + "Images/dead_forward_left.gif",
+                    format="gif -index %i" % (i),
+                )
+                for i in range(8)
+            ],
+            9,
+        )
+        self.states["summon_left"] = (
+            [
+                tk.PhotoImage(
+                    file=pathname + "Images/summon_left.gif",
+                    format="gif -index %i" % (i),
+                )
+                for i in range(8)
+            ],
+            9,
+        )
         self.state = random.choice(list(self.states))
 
         self.frame_index = 0
@@ -99,7 +121,7 @@ class pet:
 
         self.textQuotes = [
             "What sad times are these when passing ruffians can say ‘Ni’ at will to old ladies.",
-            "I fart in you general direction",
+            "I fart in your general direction",
             "He's not the Messiah - he's a very naughty boy.",
             "The mill's closed. There's no more work. We're destitute. I've got no option but to sell you all for scientific experiments.",
             "You: I think o\" go for a walk \n DesktopKnight: You're not folling anyone!",
@@ -131,8 +153,6 @@ class pet:
             "{w}x{h}+{x}+{y}".format(
                 x=str(self.x),
                 y=str(self.y),
-                # w=self.states[self.default_state][0][0].width(),
-                # h=self.states[self.default_state][0][0].height(),
                 w=200,
                 h=200,
             )
@@ -168,12 +188,11 @@ class pet:
         self.window.mainloop()
 
     def exit(self, event):
-        self.sound_thread.join()
-        self.window.destroy()
+        self.state = "dead_forward_left"
+        self.exit_flag = True
+        self.window.after(0, self.update)
 
     def change_state(self):
-        # self.state = 0
-        # self.state = random.choice(list(self.states))
 
         dx = self.mouse_x - self.center[0]
         dy = self.mouse_y - self.center[1]
@@ -181,6 +200,9 @@ class pet:
 
         if self.cooldown_curr != self.cooldown:
             self.cooldown_curr += 1
+            self.state = "summon_left"
+        elif self.state == "summon_left" and self.cooldown_curr == self.cooldown:
+            self.state = "idle_right"
         elif self.state == "idle_right" or self.state == "idle_left":
             if distance < self.chase_distance:
                 if self.mouse_x > self.center[0]:
@@ -221,10 +243,6 @@ class pet:
                     self.state = "idle_right"
 
     def movement(self):
-        # if self.state == "running_right":
-        #     self.x += 5
-        # elif self.state == "running_left":
-        #     self.x -= 5
 
         dx = self.mouse_x - self.center[0]
         dy = self.mouse_y - self.center[1]
@@ -262,6 +280,8 @@ class pet:
 
     def update(self):
         # self.x += 1
+        if self.exit_flag == True:
+            self.frame_index = self.exit_frame
 
         if time.time() > self.timestamp + 0.09:
             self.timestamp = time.time()
@@ -284,10 +304,10 @@ class pet:
 
         self.center = (self.x + 100, self.y + 100)
 
-        if self.frame_index == 0:
-            self.change_state()
-
-        self.movement()
+        if self.exit_flag == False:
+            if self.frame_index == 0:
+                self.change_state()
+            self.movement()
         # create the window
         self.window.geometry(
             "{w}x{h}+{x}+{y}".format(
@@ -305,7 +325,16 @@ class pet:
         self.label.pack()
 
         # call update after 10ms
-        self.window.after(10, self.update)
+        if self.exit_flag == False:
+            self.window.after(10, self.update)
+        else:
+            if self.exit_frame == 9:
+                self.sound_thread.join()
+                self.window.destroy()
+            else:
+                self.exit_frame += 1
+                self.window.after(500, self.update)
+
 
     def play(self, filename):
         winsound.PlaySound(pathname + "Sounds/" + filename, winsound.SND_ALIAS)
