@@ -3,28 +3,60 @@ import time
 import random
 import winsound
 
+import pathlib
+pathlib.Path(__file__).parent.resolve()
 
 class pet:
     def __init__(self):
         # create a window
         self.window = tk.Tk()
-        self.state = 0
-        # self.state = random.randrange(1,8,1)
+        #self.state = 0
         self.cycle = 0
         # dictionary to hold gifs:
         # indexed 0-8, holds a tuple ([photoimage],num of frames)
         self.states = dict()
-        self.states[0] = (
-            [
-                tk.PhotoImage(
-                    file="Images\knight_drinking.gif", format="gif -index %i" % (i)
-                )
-                for i in range(31)
-            ],
-            32,
-        )
+        self.states["idle_right"] = ([
+            tk.PhotoImage(
+                file="Images/idle_right.gif", format="gif -index %i" % (i)
+            )
+            for i in range(9)
+        ], 10) 
+        self.states["idle_left"] = ([
+            tk.PhotoImage(
+                file="Images/idle_left.gif", format="gif -index %i" % (i)
+            )
+            for i in range(8)
+        ], 9)
+        self.states["running_right"] = ([
+            tk.PhotoImage(
+                file="Images/running_right.gif", format="gif -index %i" % (i)
+            )
+            for i in range(8)
+        ], 9) 
+        self.states["running_left"] = ([
+            tk.PhotoImage(
+                file="Images/running_left.gif", format="gif -index %i" % (i)
+            )
+            for i in range(9)
+        ], 10)
+        self.states["attack_right"] = ([
+            tk.PhotoImage(
+                file="Images/attack_right.gif", format="gif -index %i" % (i)
+            )
+            for i in range(10)
+        ], 11) 
+        self.states["attack_left"] = ([
+            tk.PhotoImage(
+                file="Images/attack_left.gif", format="gif -index %i" % (i)
+            )
+            for i in range(9)
+        ], 10)
+        self.state = random.choice(list(self.states))
+
+
         self.frame_index = 0
-        self.img = self.states[0][0][self.frame_index]
+        self.default_state = "idle_right"
+        self.img = self.states[self.default_state][0][self.frame_index]
 
         # timestamp to check whether to advance frame
         self.timestamp = time.time()
@@ -46,12 +78,12 @@ class pet:
 
         # create a window of size 128x128 pixels, at coordinates 0,0
         self.x = 0
-        dim = self.states[0][0][0].height() * self.states[0][0][0].width()
         self.window.geometry(
             "{w}x{h}+{x}+0".format(
                 x=str(self.x),
-                w=self.states[0][0][0].width(),
-                h=self.states[0][0][0].height(),
+                # w=self.states[self.default_state][0][0].width(),
+                # h=self.states[self.default_state][0][0].height(),
+                w = 200, h = 200
             )
         )
 
@@ -68,13 +100,13 @@ class pet:
         self.window.mainloop()
 
     def change_state(self):
-        self.state = 0
-        # self.state = random.randrange(1,8,1)
+        #self.state = 0
+        self.state = random.choice(list(self.states))
 
     def update(self):
         self.x += 1
 
-        if time.time() > self.timestamp + 0.05:
+        if time.time() > self.timestamp + 0.09:
             self.timestamp = time.time()
             # advance the frame by one, wrap back to 0 at the end
             self.frame_index = (self.frame_index + 1) % (self.states[self.state][1] - 1)
@@ -85,8 +117,9 @@ class pet:
         self.window.geometry(
             "{w}x{h}+{x}+0".format(
                 x=str(self.x),
-                w=self.states[self.state][0][0].width(),
-                h=self.states[self.state][0][0].height(),
+                # w=self.states[self.default_state][0][0].width(),
+                # h=self.states[self.default_state][0][0].height(),
+                w = 200, h = 200
             )
         )
         # add the image to our label
