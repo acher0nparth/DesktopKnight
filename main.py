@@ -3,7 +3,7 @@ import tkinter as tk
 import time
 import random
 import winsound
-import questReminders
+#import questReminders
 import math
 import pathlib
 import pyautogui
@@ -146,7 +146,9 @@ class pet:
         #self.state = random.choice(list(self.states))
         chase_distance = 1000
         attack_distance = 200
-        distance = math.sqrt((self.mouse_x-self.x)**2 + (self.mouse_y-self.x)**2)
+        dx = self.mouse_x - self.center[0]
+        dy = self.mouse_y - self.center[1]
+        distance = math.sqrt(dx * dx + dy * dy)
         if self.state == "idle_right" or self.state == "idle_left":
             if distance < chase_distance:
                 if self.mouse_x > self.x:
@@ -204,13 +206,13 @@ class pet:
             self.sound_thread = threading.Thread(
                 target=self.play, args=("bitelegs.wav",)
             )
-            self.sound_thread.start()
+            #self.sound_thread.start()
         if distance < 90:
             if not self.sound_thread.is_alive():
                 self.sound_thread = threading.Thread(
                     target=self.play, args=("mp_grail.wav",)
                 )
-                self.sound_thread.start()
+                #self.sound_thread.start()
         else:
             try:
                 dx /= distance
