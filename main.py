@@ -3,7 +3,7 @@ import tkinter as tk
 import time
 import random
 import winsound
-import questReminders
+#import questReminders
 import math
 import pathlib
 import pyautogui
@@ -12,7 +12,7 @@ import threading
 
 pathlib.Path(__file__).parent.resolve()
 
-pathname = ""
+pathname = "swamp/Lib/DesktopKnight/"
 
 
 class pet:
@@ -21,6 +21,8 @@ class pet:
         self.window = tk.Tk()
         # self.state = 0
         self.cycle = 0
+        self.aggro = 3
+        self.aggro_curr = 0
         # dictionary to hold gifs:
         # indexed 0-8, holds a tuple ([photoimage],num of frames)
         self.states = dict()
@@ -141,11 +143,47 @@ class pet:
 
     def change_state(self):
         # self.state = 0
-        self.state = random.choice(list(self.states))
+        #self.state = random.choice(list(self.states))
+        chase_distance = 1000
+        attack_distance = 200
+        dx = self.mouse_x - self.center[0]
+        dy = self.mouse_y - self.center[1]
+        distance = math.sqrt(dx * dx + dy * dy)
         if self.state == "idle_right" or self.state == "idle_left":
-            # if math.sqrt(self.mouse_x** + self.mouse_y**) < 500:
-            #     pass
-            pass
+            if distance < chase_distance:
+                if self.mouse_x > self.x:
+                    self.state = "running_right"
+                else:
+                    self.state = "running_left"
+            else:
+                if self.state == "idle_right":
+                    self.state = "idle_left"
+                else:
+                    self.state = "idle_right"
+        elif self.state == "running_left" or self.state == "running_right":
+            if distance < attack_distance:
+                if self.mouse_x < self.x:
+                    self.state = "attack_left"
+                else:
+                    self.state = "attack_right"
+            elif distance > chase_distance:
+                self.state = "idle_right"
+            else:
+                if self.mouse_x > self.x:
+                    self.state = "running_right"
+                else:
+                    self.state = "running_left"
+        else:
+            if distance < attack_distance:
+                if self.aggro_curr < self.aggro:
+                    self.aggro_curr += 1
+                else:
+                    self.state = "idle_right"
+                    self.aggro_curr = 0
+            else:
+                self.state = "idle_left"
+        
+            
 
     def movement(self):
         # if self.state == "running_right":
@@ -168,13 +206,13 @@ class pet:
             self.sound_thread = threading.Thread(
                 target=self.play, args=("bitelegs.wav",)
             )
-            self.sound_thread.start()
+            #self.sound_thread.start()
         if distance < 90:
             if not self.sound_thread.is_alive():
                 self.sound_thread = threading.Thread(
                     target=self.play, args=("mp_grail.wav",)
                 )
-                self.sound_thread.start()
+                #self.sound_thread.start()
         else:
             try:
                 dx /= distance
@@ -200,6 +238,7 @@ class pet:
         if self.frame_index == 0:
             self.change_state()
 
+        self.movement()
         # create the window
         self.window.geometry(
             "{w}x{h}+{x}+{y}".format(
