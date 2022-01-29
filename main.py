@@ -1,5 +1,6 @@
 import tkinter as tk
 import time
+import random
 import winsound
 
 
@@ -7,16 +8,23 @@ class pet:
     def __init__(self):
         # create a window
         self.window = tk.Tk()
-
-        # placeholder image
-        self.drinking = [
-            tk.PhotoImage(
-                file="Images/knight_drinking.gif", format="gif -index %i" % (i)
-            )
-            for i in range(31)
-        ]
+        self.state = 0
+        # self.state = random.randrange(1,8,1)
+        self.cycle = 0
+        # dictionary to hold gifs:
+        # indexed 0-8, holds a tuple ([photoimage],num of frames)
+        self.states = dict()
+        self.states[0] = (
+            [
+                tk.PhotoImage(
+                    file="Images\knight_drinking.gif", format="gif -index %i" % (i)
+                )
+                for i in range(31)
+            ],
+            32,
+        )
         self.frame_index = 0
-        self.img = self.drinking[self.frame_index]
+        self.img = self.states[0][0][self.frame_index]
 
         # timestamp to check whether to advance frame
         self.timestamp = time.time()
@@ -38,12 +46,12 @@ class pet:
 
         # create a window of size 128x128 pixels, at coordinates 0,0
         self.x = 0
-        dim = self.drinking[0].height() * self.drinking[0].width()
+        dim = self.states[0][0][0].height() * self.states[0][0][0].width()
         self.window.geometry(
             "{w}x{h}+{x}+0".format(
                 x=str(self.x),
-                w=self.drinking[0].width(),
-                h=self.drinking[0].height(),
+                w=self.states[0][0][0].width(),
+                h=self.states[0][0][0].height(),
             )
         )
 
@@ -59,23 +67,26 @@ class pet:
         self.window.after(0, self.update)
         self.window.mainloop()
 
-    def update(self):
-        # move right by one pixel
-        # self.x += 1
+    def change_state(self):
+        self.state = 0
+        # self.state = random.randrange(1,8,1)
 
-        # advance frame if 50ms have passed
-        if time.time() > self.timestamp + 0.09:
+    def update(self):
+        self.x += 1
+
+        if time.time() > self.timestamp + 0.05:
             self.timestamp = time.time()
             # advance the frame by one, wrap back to 0 at the end
-            self.frame_index = (self.frame_index + 1) % 31
-            self.img = self.drinking[self.frame_index]
-
+            self.frame_index = (self.frame_index + 1) % (self.states[self.state][1] - 1)
+            self.img = self.states[self.state][0][self.frame_index]
+        if self.frame_index == 0:
+            self.change_state()
         # create the window
         self.window.geometry(
             "{w}x{h}+{x}+0".format(
                 x=str(self.x),
-                w=self.drinking[0].width(),
-                h=self.drinking[0].height(),
+                w=self.states[self.state][0][0].width(),
+                h=self.states[self.state][0][0].height(),
             )
         )
         # add the image to our label
@@ -92,4 +103,5 @@ class pet:
         )
 
 
-pet()
+if __name__ == "__main__":
+    pet()
