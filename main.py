@@ -247,9 +247,7 @@ class pet:
             # if not self.chasing:
             self.chasing = True
             sound = random.choice(self.sounds)
-            self.sound_thread = threading.Thread(
-                target=self.play, args=(sound,)
-            )
+            self.sound_thread = threading.Thread(target=self.play, args=(sound,))
             self.sound_thread.start()
         if distance < self.attack_distance:
             # self.sound_thread = threading.Thread(
