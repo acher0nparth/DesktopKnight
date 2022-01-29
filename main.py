@@ -1,7 +1,11 @@
 import tkinter as tk
 import time
+# import pyaudio
+# from playsound import playsound
+import wave
 import random
-
+import threading
+import winsound
 
 class pet:
     def __init__(self):
@@ -53,9 +57,11 @@ class pet:
         # give window to geometry manager (so it will appear)
         self.label.pack()
 
+        self.play("privparts.wav")
         # run self.update() after 0ms when mainloop starts
         self.window.after(0, self.update)
         self.window.mainloop()
+
 
     def update(self):
         # move right by one pixel
@@ -83,6 +89,10 @@ class pet:
 
         # call update after 10ms
         self.window.after(10, self.update)
+
+
+    def play(self, filename):
+        winsound.PlaySound('Sounds/' + filename, winsound.SND_ALIAS | winsound.SND_ASYNC)
 
 
 pet()
