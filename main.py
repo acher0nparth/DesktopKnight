@@ -4,57 +4,81 @@ import random
 import winsound
 import questReminders
 import pathlib
+
 pathlib.Path(__file__).parent.resolve()
 
-pathname = "swamp/Lib/DesktopKnight/"
+pathname = ""
+
 
 class pet:
     def __init__(self):
         # create a window
         self.window = tk.Tk()
-        #self.state = 0
+        # self.state = 0
         self.cycle = 0
         # dictionary to hold gifs:
         # indexed 0-8, holds a tuple ([photoimage],num of frames)
         self.states = dict()
-        self.states["idle_right"] = ([
-            tk.PhotoImage(
-                file=pathname + "Images/idle_right.gif", format="gif -index %i" % (i)
-            )
-            for i in range(9)
-        ], 10) 
-        self.states["idle_left"] = ([
-            tk.PhotoImage(
-                file=pathname + "Images/idle_left.gif", format="gif -index %i" % (i)
-            )
-            for i in range(8)
-        ], 9)
-        self.states["running_right"] = ([
-            tk.PhotoImage(
-                file=pathname + "Images/running_right.gif", format="gif -index %i" % (i)
-            )
-            for i in range(8)
-        ], 9) 
-        self.states["running_left"] = ([
-            tk.PhotoImage(
-                file=pathname + "Images/running_left.gif", format="gif -index %i" % (i)
-            )
-            for i in range(9)
-        ], 10)
-        self.states["attack_right"] = ([
-            tk.PhotoImage(
-                file=pathname + "Images/attack_right.gif", format="gif -index %i" % (i)
-            )
-            for i in range(10)
-        ], 11) 
-        self.states["attack_left"] = ([
-            tk.PhotoImage(
-                file=pathname + "Images/attack_left.gif", format="gif -index %i" % (i)
-            )
-            for i in range(9)
-        ], 10)
+        self.states["idle_right"] = (
+            [
+                tk.PhotoImage(
+                    file=pathname + "Images/idle_right.gif",
+                    format="gif -index %i" % (i),
+                )
+                for i in range(9)
+            ],
+            10,
+        )
+        self.states["idle_left"] = (
+            [
+                tk.PhotoImage(
+                    file=pathname + "Images/idle_left.gif", format="gif -index %i" % (i)
+                )
+                for i in range(8)
+            ],
+            9,
+        )
+        self.states["running_right"] = (
+            [
+                tk.PhotoImage(
+                    file=pathname + "Images/running_right.gif",
+                    format="gif -index %i" % (i),
+                )
+                for i in range(8)
+            ],
+            9,
+        )
+        self.states["running_left"] = (
+            [
+                tk.PhotoImage(
+                    file=pathname + "Images/running_left.gif",
+                    format="gif -index %i" % (i),
+                )
+                for i in range(9)
+            ],
+            10,
+        )
+        self.states["attack_right"] = (
+            [
+                tk.PhotoImage(
+                    file=pathname + "Images/attack_right.gif",
+                    format="gif -index %i" % (i),
+                )
+                for i in range(10)
+            ],
+            11,
+        )
+        self.states["attack_left"] = (
+            [
+                tk.PhotoImage(
+                    file=pathname + "Images/attack_left.gif",
+                    format="gif -index %i" % (i),
+                )
+                for i in range(9)
+            ],
+            10,
+        )
         self.state = random.choice(list(self.states))
-
 
         self.frame_index = 0
         self.default_state = "idle_right"
@@ -85,7 +109,8 @@ class pet:
                 x=str(self.x),
                 # w=self.states[self.default_state][0][0].width(),
                 # h=self.states[self.default_state][0][0].height(),
-                w = 200, h = 200
+                w=200,
+                h=200,
             )
         )
 
@@ -102,7 +127,7 @@ class pet:
         self.window.mainloop()
 
     def change_state(self):
-        #self.state = 0
+        # self.state = 0
         self.state = random.choice(list(self.states))
 
     def movement(self):
@@ -112,14 +137,14 @@ class pet:
             self.x -= 5
 
     def update(self):
-        #self.x += 1
+        # self.x += 1
 
         if time.time() > self.timestamp + 0.09:
             self.timestamp = time.time()
             # advance the frame by one, wrap back to 0 at the end
             self.frame_index = (self.frame_index + 1) % (self.states[self.state][1] - 1)
             self.img = self.states[self.state][0][self.frame_index]
-        
+
         self.movement()
 
         if self.frame_index == 0:
@@ -130,7 +155,8 @@ class pet:
                 x=str(self.x),
                 # w=self.states[self.default_state][0][0].width(),
                 # h=self.states[self.default_state][0][0].height(),
-                w = 200, h = 200
+                w=200,
+                h=200,
             )
         )
         # add the image to our label
