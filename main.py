@@ -5,57 +5,83 @@ import winsound
 import questReminders
 import math
 import pathlib
+import pyautogui
+import math
+
 pathlib.Path(__file__).parent.resolve()
 
-pathname = "swamp/Lib/DesktopKnight/"
+pathname = ""
+
 
 class pet:
     def __init__(self):
         # create a window
         self.window = tk.Tk()
-        #self.state = 0
+        # self.state = 0
         self.cycle = 0
         # dictionary to hold gifs:
         # indexed 0-8, holds a tuple ([photoimage],num of frames)
         self.states = dict()
-        self.states["idle_right"] = ([
-            tk.PhotoImage(
-                file=pathname + "Images/idle_right.gif", format="gif -index %i" % (i)
-            )
-            for i in range(9)
-        ], 10) 
-        self.states["idle_left"] = ([
-            tk.PhotoImage(
-                file=pathname + "Images/idle_left.gif", format="gif -index %i" % (i)
-            )
-            for i in range(8)
-        ], 9)
-        self.states["running_right"] = ([
-            tk.PhotoImage(
-                file=pathname + "Images/running_right.gif", format="gif -index %i" % (i)
-            )
-            for i in range(8)
-        ], 9) 
-        self.states["running_left"] = ([
-            tk.PhotoImage(
-                file=pathname + "Images/running_left.gif", format="gif -index %i" % (i)
-            )
-            for i in range(9)
-        ], 10)
-        self.states["attack_right"] = ([
-            tk.PhotoImage(
-                file=pathname + "Images/attack_right.gif", format="gif -index %i" % (i)
-            )
-            for i in range(10)
-        ], 11) 
-        self.states["attack_left"] = ([
-            tk.PhotoImage(
-                file=pathname + "Images/attack_left.gif", format="gif -index %i" % (i)
-            )
-            for i in range(9)
-        ], 10)
+        self.states["idle_right"] = (
+            [
+                tk.PhotoImage(
+                    file=pathname + "Images/idle_right.gif",
+                    format="gif -index %i" % (i),
+                )
+                for i in range(9)
+            ],
+            10,
+        )
+        self.states["idle_left"] = (
+            [
+                tk.PhotoImage(
+                    file=pathname + "Images/idle_left.gif", format="gif -index %i" % (i)
+                )
+                for i in range(8)
+            ],
+            9,
+        )
+        self.states["running_right"] = (
+            [
+                tk.PhotoImage(
+                    file=pathname + "Images/running_right.gif",
+                    format="gif -index %i" % (i),
+                )
+                for i in range(8)
+            ],
+            9,
+        )
+        self.states["running_left"] = (
+            [
+                tk.PhotoImage(
+                    file=pathname + "Images/running_left.gif",
+                    format="gif -index %i" % (i),
+                )
+                for i in range(9)
+            ],
+            10,
+        )
+        self.states["attack_right"] = (
+            [
+                tk.PhotoImage(
+                    file=pathname + "Images/attack_right.gif",
+                    format="gif -index %i" % (i),
+                )
+                for i in range(10)
+            ],
+            11,
+        )
+        self.states["attack_left"] = (
+            [
+                tk.PhotoImage(
+                    file=pathname + "Images/attack_left.gif",
+                    format="gif -index %i" % (i),
+                )
+                for i in range(9)
+            ],
+            10,
+        )
         self.state = random.choice(list(self.states))
-
 
         self.frame_index = 0
         self.default_state = "idle_right"
@@ -81,12 +107,15 @@ class pet:
 
         # create a window of size 128x128 pixels, at coordinates 0,0
         self.x = 0
+        self.y = 0
         self.window.geometry(
-            "{w}x{h}+{x}+0".format(
+            "{w}x{h}+{x}+{y}".format(
                 x=str(self.x),
+                y = str(self.y),
                 # w=self.states[self.default_state][0][0].width(),
                 # h=self.states[self.default_state][0][0].height(),
-                w = 200, h = 200
+                w=200,
+                h=200,
             )
         )
 
@@ -98,12 +127,15 @@ class pet:
 
         self.play("privparts.wav")
 
+
+        self.mouse_x, self.mouse_y = pyautogui.position()    
+
         # run self.update() after 0ms when mainloop starts
         self.window.after(0, self.update)
         self.window.mainloop()
 
     def change_state(self):
-        #self.state = 0
+        # self.state = 0
         self.state = random.choice(list(self.states))
         if self.state == "idle_right" or self.state == "idle_left":
             if math.sqrt(self.mouse_x** + self.mouse_y**) < 500:
@@ -111,31 +143,43 @@ class pet:
             
 
     def movement(self):
-        if self.state == "running_right":
-            self.x += 5
-        elif self.state == "running_left":
-            self.x -= 5
+        # if self.state == "running_right":
+        #     self.x += 5
+        # elif self.state == "running_left":
+        #     self.x -= 5
+        dx = self.mouse_x - self.x
+        dy = self.mouse_y - self.y
+        distance = math.sqrt(dx*dx + dy*dy)
+        dx /= distance
+        dy /= distance
+        self.x += round(dx)
+        self.y += round(dy)
+        
 
     def update(self):
-        #self.x += 1
+        # self.x += 1
 
         if time.time() > self.timestamp + 0.09:
             self.timestamp = time.time()
             # advance the frame by one, wrap back to 0 at the end
             self.frame_index = (self.frame_index + 1) % (self.states[self.state][1] - 1)
             self.img = self.states[self.state][0][self.frame_index]
-        
+
+        self.mouse_x, self.mouse_y = pyautogui.position()
         self.movement()
 
         if self.frame_index == 0:
             self.change_state()
+
         # create the window
         self.window.geometry(
-            "{w}x{h}+{x}+0".format(
+            "{w}x{h}+{x}+{y}".format(
                 x=str(self.x),
+                y = str(self.y),
                 # w=self.states[self.default_state][0][0].width(),
                 # h=self.states[self.default_state][0][0].height(),
-                w = 200, h = 200
+                w=200,
+                h=200,
             )
         )
         # add the image to our label
