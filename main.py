@@ -6,8 +6,7 @@ import questReminders
 import pathlib
 pathlib.Path(__file__).parent.resolve()
 
-import pathlib
-pathlib.Path(__file__).parent.resolve()
+pathname = "swamp/Lib/DesktopKnight/"
 
 class pet:
     def __init__(self):
@@ -20,37 +19,37 @@ class pet:
         self.states = dict()
         self.states["idle_right"] = ([
             tk.PhotoImage(
-                file="Images/idle_right.gif", format="gif -index %i" % (i)
+                file=pathname + "Images/idle_right.gif", format="gif -index %i" % (i)
             )
             for i in range(9)
         ], 10) 
         self.states["idle_left"] = ([
             tk.PhotoImage(
-                file="Images/idle_left.gif", format="gif -index %i" % (i)
+                file=pathname + "Images/idle_left.gif", format="gif -index %i" % (i)
             )
             for i in range(8)
         ], 9)
         self.states["running_right"] = ([
             tk.PhotoImage(
-                file="Images/running_right.gif", format="gif -index %i" % (i)
+                file=pathname + "Images/running_right.gif", format="gif -index %i" % (i)
             )
             for i in range(8)
         ], 9) 
         self.states["running_left"] = ([
             tk.PhotoImage(
-                file="Images/running_left.gif", format="gif -index %i" % (i)
+                file=pathname + "Images/running_left.gif", format="gif -index %i" % (i)
             )
             for i in range(9)
         ], 10)
         self.states["attack_right"] = ([
             tk.PhotoImage(
-                file="Images/attack_right.gif", format="gif -index %i" % (i)
+                file=pathname + "Images/attack_right.gif", format="gif -index %i" % (i)
             )
             for i in range(10)
         ], 11) 
         self.states["attack_left"] = ([
             tk.PhotoImage(
-                file="Images/attack_left.gif", format="gif -index %i" % (i)
+                file=pathname + "Images/attack_left.gif", format="gif -index %i" % (i)
             )
             for i in range(9)
         ], 10)
@@ -106,14 +105,23 @@ class pet:
         #self.state = 0
         self.state = random.choice(list(self.states))
 
+    def movement(self):
+        if self.state == "running_right":
+            self.x += 5
+        elif self.state == "running_left":
+            self.x -= 5
+
     def update(self):
-        self.x += 1
+        #self.x += 1
 
         if time.time() > self.timestamp + 0.09:
             self.timestamp = time.time()
             # advance the frame by one, wrap back to 0 at the end
             self.frame_index = (self.frame_index + 1) % (self.states[self.state][1] - 1)
             self.img = self.states[self.state][0][self.frame_index]
+        
+        self.movement()
+
         if self.frame_index == 0:
             self.change_state()
         # create the window
@@ -135,7 +143,7 @@ class pet:
 
     def play(self, filename):
         winsound.PlaySound(
-            "Sounds/" + filename, winsound.SND_ALIAS | winsound.SND_ASYNC
+            pathname + "Sounds/" + filename, winsound.SND_ALIAS | winsound.SND_ASYNC
         )
 
 
