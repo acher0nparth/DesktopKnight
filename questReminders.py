@@ -1,14 +1,18 @@
 from twilio.rest import Client
+from configparser import ConfigParser
 
-account_sid = "AC28db46872233b9069b4f9ca1f8c8500c"
-auth_token = "d3882fe520ea898dd6148dcaa41752ed"
+smsInfo = ConfigParser()
+smsInfo.read("config.cfg")
+
+accountInfo = smsInfo["TWILIOINFO"]
+account_sid = accountInfo["account_sid"]
+auth_token = accountInfo["auth_token"]
+
 client = Client(account_sid, auth_token)
 
-twiNum = '+17652759944'
-
-
-def sendQuestTip(tip, number = '+13038812829'):
+def sendQuestTip(tip):
+    print(account_sid)
     message = client.messages.create(
-        to=number,
-        from_=twiNum,
+        to=accountInfo["to"],
+        from_=accountInfo["from"],
         body=tip)
