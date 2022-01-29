@@ -56,7 +56,7 @@ class pet:
 
         # give window to geometry manager (so it will appear)
         self.label.pack()
-
+        self.sound_playing = False
         self.play("privparts.wav")
         # run self.update() after 0ms when mainloop starts
         self.window.after(0, self.update)
@@ -92,7 +92,9 @@ class pet:
 
 
     def play(self, filename):
-        winsound.PlaySound('Sounds/' + filename, winsound.SND_ALIAS | winsound.SND_ASYNC)
+        if not self.sound_playing:
+            winsound.PlaySound('Sounds/' + filename, winsound.SND_ALIAS | winsound.SND_ASYNC)
+            self.sound_playing = True
 
 
 pet()
