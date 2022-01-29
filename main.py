@@ -3,23 +3,73 @@ import time
 import random
 import winsound
 
+import pathlib
+pathlib.Path(__file__).parent.resolve()
 
 class pet:
     def __init__(self):
         # create a window
         self.window = tk.Tk()
-        self.state = 0
-        #self.state = random.randrange(1,8,1)
+        #self.state = 0
+        self.state = random.randrange(1,9,1)
         self.cycle = 0
         # dictionary to hold gifs:
         # indexed 0-8, holds a tuple ([photoimage],num of frames)
         self.states = dict()
         self.states[0] = ([
             tk.PhotoImage(
-                file="swamp\Lib\DesktopKnight\Images\knight_drinking.gif", format="gif -index %i" % (i)
+                file="swamp\Lib\DesktopKnight\Images\\basicAttack.gif", format="gif -index %i" % (i)
             )
-            for i in range(31)
-        ], 32) 
+            for i in range(9)
+        ], 10) 
+        self.states[1] = ([
+            tk.PhotoImage(
+                file="swamp\Lib\DesktopKnight\Images\deadBackward.gif", format="gif -index %i" % (i)
+            )
+            for i in range(8)
+        ], 9)
+        self.states[2] = ([
+            tk.PhotoImage(
+                file="swamp\Lib\DesktopKnight\Images\deadForward.gif", format="gif -index %i" % (i)
+            )
+            for i in range(8)
+        ], 9) 
+        self.states[3] = ([
+            tk.PhotoImage(
+                file="swamp\Lib\DesktopKnight\Images\\frontAttack.gif", format="gif -index %i" % (i)
+            )
+            for i in range(9)
+        ], 10)
+        self.states[4] = ([
+            tk.PhotoImage(
+                file="swamp\Lib\DesktopKnight\Images\idle.gif", format="gif -index %i" % (i)
+            )
+            for i in range(10)
+        ], 11) 
+        self.states[5] = ([
+            tk.PhotoImage(
+                file="swamp\Lib\DesktopKnight\Images\jump.gif", format="gif -index %i" % (i)
+            )
+            for i in range(9)
+        ], 10)
+        self.states[6] = ([
+            tk.PhotoImage(
+                file="swamp\Lib\DesktopKnight\Images\\running.gif", format="gif -index %i" % (i)
+            )
+            for i in range(9)
+        ], 10) 
+        self.states[7] = ([
+            tk.PhotoImage(
+                file="swamp\Lib\DesktopKnight\Images\summon.gif", format="gif -index %i" % (i)
+            )
+            for i in range(8)
+        ], 9)
+        self.states[8] = ([
+            tk.PhotoImage(
+                file="swamp\Lib\DesktopKnight\Images\walking.gif", format="gif -index %i" % (i)
+            )
+            for i in range(9)
+        ], 10)
         self.frame_index = 0
         self.img = self.states[0][0][self.frame_index]
 
@@ -65,8 +115,8 @@ class pet:
         self.window.mainloop()
 
     def change_state(self):
-        self.state = 0
-        #self.state = random.randrange(1,8,1)
+        #self.state = 0
+        self.state = random.randrange(1,9,1)
 
     def update(self):
         self.x += 1 
