@@ -3,7 +3,7 @@ import tkinter as tk
 import time
 import random
 import winsound
-#import questReminders
+import questReminders
 import math
 import pathlib
 import pyautogui
@@ -12,7 +12,7 @@ import threading
 
 pathlib.Path(__file__).parent.resolve()
 
-pathname = "swamp/Lib/DesktopKnight/"
+pathname = ""
 
 
 class pet:
@@ -95,6 +95,14 @@ class pet:
         self.default_state = "idle_right"
         self.img = self.states[self.default_state][0][self.frame_index]
 
+
+        self.textQuotes = ["What sad times are these when passing ruffians can say ‘Ni’ at will to old ladies.",
+                           "I fart in you general direction",
+                           "He's not the Messiah - he's a very naughty boy.",
+                           "The mill's closed. There's no more work. We're destitute. I've got no option but to sell you all for scientific experiments.",
+                           "You: I think o\" go for a walk \n DesktopKnight: You're not folling anyone!",
+                           "Your mother was a hamster and your father smelt of elderberries!"]
+
         # timestamp to check whether to advance frame
         self.timestamp = time.time()
 
@@ -141,6 +149,10 @@ class pet:
 
         self.mouse_x, self.mouse_y = pyautogui.position()
 
+        self.textTimer =30
+        self.lastMove = time.time()
+        self.prevMousePos = pyautogui.position()
+
         # run self.update() after 0ms when mainloop starts
         self.window.after(0, self.update)
         self.window.mainloop()
@@ -163,18 +175,12 @@ class pet:
                     self.state = "running_left"
             else:
                 self.state = "idle_right"
-                # if self.state == "idle_right":
-                #     self.state = "idle_left"
-                # else:
-                #     self.state = "idle_right"
         elif self.state == "running_left" or self.state == "running_right":
             if distance <= self.attack_distance:
                 if self.mouse_x < self.center[0]:
                     self.state = "attack_left"
-                    print("attack left set")
                 else:
                     self.state = "attack_right"
-                    print("attack right set")
             elif distance > self.chase_distance:
                 self.state = "idle_right"
             else:
@@ -184,16 +190,20 @@ class pet:
                     self.state = "running_left"
         else:
             if distance <= self.attack_distance:
-                print("attacking")
                 if self.aggro_curr < self.aggro:
                     self.aggro_curr += 1
                 else:
-                    print("cooldown reset")
-                    self.state = "idle_right"
                     self.aggro_curr = 0
                     self.cooldown_curr = 0
+                    if self.state == "attack_left":
+                        self.state = "idle_left"
+                    else:
+                        self.state = "idle_right"
             else:
-                self.state = "idle_right"
+                if self.state == "attack_left":
+                    self.state = "idle_left"
+                else:
+                    self.state = "idle_right"
         
             
 
@@ -245,6 +255,16 @@ class pet:
             self.img = self.states[self.state][0][self.frame_index]
 
         self.mouse_x, self.mouse_y = pyautogui.position()
+
+        if self.prevMousePos == pyautogui.position() and time.time() - self.lastMove > self.textTimer:
+            #questReminders.sendQuestTip(random.choice(self.textQuotes))
+            self.prevMousePos = pyautogui.position()
+            self.lastMove = time.time()
+        elif self.prevMousePos != pyautogui.position():
+            self.prevMousePos = pyautogui.position()
+            self.lastMove = time.time()
+
+
         self.center = (self.x + 100, self.y + 100)
 
         if self.frame_index == 0:
