@@ -4,6 +4,7 @@ import time
 import random
 import winsound
 import questReminders
+import math
 import pathlib
 import pyautogui
 import math
@@ -141,6 +142,10 @@ class pet:
     def change_state(self):
         # self.state = 0
         self.state = random.choice(list(self.states))
+        if self.state == "idle_right" or self.state == "idle_left":
+            if math.sqrt(self.mouse_x** + self.mouse_y**) < 500:
+                if 
+            
 
     def movement(self):
         # if self.state == "running_right":
