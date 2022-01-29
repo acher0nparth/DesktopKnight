@@ -1,5 +1,6 @@
 from concurrent.futures import thread
 import tkinter as tk
+# from mttkinter import mtTkinter as tk
 import time
 import random
 import winsound
@@ -127,7 +128,8 @@ class pet:
                 h=200,
             )
         )
-        self.center = (self.x + 100, self.y + 100)
+        #gives us the location of the center of the knight
+        self.center = (self.x + self.window.winfo_width()/2, self.y + self.window.winfo_height()/2)
 
         self.chasing = False
         # add the image to our label
@@ -136,15 +138,24 @@ class pet:
         # give window to geometry manager (so it will appear)
         self.label.pack()
 
-        # self.play("privparts.wav")
-
         self.sound_thread = threading.Thread(target=self.play, args=("fart.wav",))
 
+        #gets current mouse position
         self.mouse_x, self.mouse_y = pyautogui.position()
+
+        # self.window.bind('<Control-x>', self.exit)
+        # self.label.protocol("WM_DELETE_WINDOW", self.exit)
+
 
         # run self.update() after 0ms when mainloop starts
         self.window.after(0, self.update)
         self.window.mainloop()
+
+    # def exit(self, event):
+    #     try:
+    #         self.window.destroy()
+    #     except(RuntimeError):
+    #         pass
 
     def change_state(self):
         # self.state = 0
@@ -172,10 +183,8 @@ class pet:
             if distance <= self.attack_distance:
                 if self.mouse_x < self.center[0]:
                     self.state = "attack_left"
-                    print("attack left set")
                 else:
                     self.state = "attack_right"
-                    print("attack right set")
             elif distance > self.chase_distance:
                 self.state = "idle_right"
             else:
@@ -185,11 +194,9 @@ class pet:
                     self.state = "running_left"
         else:
             if distance <= self.attack_distance:
-                print("attacking")
                 if self.aggro_curr < self.aggro:
                     self.aggro_curr += 1
                 else:
-                    print("cooldown reset")
                     self.state = "idle_right"
                     self.aggro_curr = 0
                     self.cooldown_curr = 0
@@ -214,6 +221,7 @@ class pet:
     def chase(self, dx, dy, distance):
         # self.play("bitelegs.wav")
         if not self.sound_thread.is_alive() and not self.chasing:
+        # if not self.chasing:
             self.chasing = True
             self.sound_thread = threading.Thread(
                 target=self.play, args=("bitelegs.wav",)
