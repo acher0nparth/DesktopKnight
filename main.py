@@ -9,14 +9,14 @@ class pet:
         self.window = tk.Tk()
 
         # placeholder image
-        self.walking_right = [
+        self.drinking = [
             tk.PhotoImage(
                 file="Images/knight_drinking.gif", format="gif -index %i" % (i)
             )
             for i in range(31)
         ]
         self.frame_index = 0
-        self.img = self.walking_right[self.frame_index]
+        self.img = self.drinking[self.frame_index]
 
         # timestamp to check whether to advance frame
         self.timestamp = time.time()
@@ -38,12 +38,12 @@ class pet:
 
         # create a window of size 128x128 pixels, at coordinates 0,0
         self.x = 0
-        dim = self.walking_right[0].height() * self.walking_right[0].width()
+        dim = self.drinking[0].height() * self.drinking[0].width()
         self.window.geometry(
             "{w}x{h}+{x}+0".format(
                 x=str(self.x),
-                w=self.walking_right[0].width(),
-                h=self.walking_right[0].height(),
+                w=self.drinking[0].width(),
+                h=self.drinking[0].height(),
             )
         )
 
@@ -59,21 +59,21 @@ class pet:
 
     def update(self):
         # move right by one pixel
-        self.x += 1
+        # self.x += 1
 
         # advance frame if 50ms have passed
-        if time.time() > self.timestamp + 0.05:
+        if time.time() > self.timestamp + 0.09:
             self.timestamp = time.time()
             # advance the frame by one, wrap back to 0 at the end
             self.frame_index = (self.frame_index + 1) % 31
-            self.img = self.walking_right[self.frame_index]
+            self.img = self.drinking[self.frame_index]
 
         # create the window
         self.window.geometry(
             "{w}x{h}+{x}+0".format(
                 x=str(self.x),
-                w=self.walking_right[0].width(),
-                h=self.walking_right[0].height(),
+                w=self.drinking[0].width(),
+                h=self.drinking[0].height(),
             )
         )
         # add the image to our label
