@@ -1,3 +1,4 @@
+from concurrent.futures import thread
 import tkinter as tk
 import time
 import random
@@ -6,6 +7,7 @@ import questReminders
 import pathlib
 import pyautogui
 import math
+import threading
 
 pathlib.Path(__file__).parent.resolve()
 
@@ -110,24 +112,27 @@ class pet:
         self.window.geometry(
             "{w}x{h}+{x}+{y}".format(
                 x=str(self.x),
-                y = str(self.y),
+                y=str(self.y),
                 # w=self.states[self.default_state][0][0].width(),
                 # h=self.states[self.default_state][0][0].height(),
                 w=200,
                 h=200,
             )
         )
+        self.center = (self.x + 100, self.y + 100)
 
+        self.chasing = False
         # add the image to our label
         self.label.configure(image=self.img)
 
         # give window to geometry manager (so it will appear)
         self.label.pack()
 
-        self.play("privparts.wav")
+        # self.play("privparts.wav")
 
+        self.sound_thread = threading.Thread(target=self.play, args=("fart.wav",))
 
-        self.mouse_x, self.mouse_y = pyautogui.position()    
+        self.mouse_x, self.mouse_y = pyautogui.position()
 
         # run self.update() after 0ms when mainloop starts
         self.window.after(0, self.update)
@@ -143,17 +148,36 @@ class pet:
         # elif self.state == "running_left":
         #     self.x -= 5
 
-        dx = self.mouse_x - self.x
-        dy = self.mouse_y - self.y
-        if dy < 200 and dx < 200:
-            self.chase(dx, dy)
+        dx = self.mouse_x - self.center[0]
+        dy = self.mouse_y - self.center[1]
+        distance = math.sqrt(dx * dx + dy * dy)
+        if distance < 600:
+            self.chase(dx, dy, distance)
+        else:
+            self.chasing = False
 
-    def chase(self, dx, dy):
-        distance = math.sqrt(dx*dx + dy*dy)
-        dx /= distance
-        dy /= distance
-        self.x += round(dx)
-        self.y += round(dy)  
+    def chase(self, dx, dy, distance):
+        # self.play("bitelegs.wav")
+        if not self.sound_thread.is_alive() and not self.chasing:
+            self.chasing = True
+            self.sound_thread = threading.Thread(
+                target=self.play, args=("bitelegs.wav",)
+            )
+            self.sound_thread.start()
+        if distance < 90:
+            if not self.sound_thread.is_alive():
+                self.sound_thread = threading.Thread(
+                    target=self.play, args=("mp_grail.wav",)
+                )
+                self.sound_thread.start()
+        else:
+            try:
+                dx /= distance
+                dy /= distance
+                self.x += round(dx)
+                self.y += round(dy)
+            except (ZeroDivisionError):
+                pass
 
     def update(self):
         # self.x += 1
@@ -165,6 +189,7 @@ class pet:
             self.img = self.states[self.state][0][self.frame_index]
 
         self.mouse_x, self.mouse_y = pyautogui.position()
+        self.center = (self.x + 100, self.y + 100)
         self.movement()
 
         if self.frame_index == 0:
@@ -174,7 +199,7 @@ class pet:
         self.window.geometry(
             "{w}x{h}+{x}+{y}".format(
                 x=str(self.x),
-                y = str(self.y),
+                y=str(self.y),
                 # w=self.states[self.default_state][0][0].width(),
                 # h=self.states[self.default_state][0][0].height(),
                 w=200,
@@ -190,9 +215,7 @@ class pet:
         self.window.after(10, self.update)
 
     def play(self, filename):
-        winsound.PlaySound(
-            pathname + "Sounds/" + filename, winsound.SND_ALIAS | winsound.SND_ASYNC
-        )
+        winsound.PlaySound(pathname + "Sounds/" + filename, winsound.SND_ALIAS)
 
 
 if __name__ == "__main__":
