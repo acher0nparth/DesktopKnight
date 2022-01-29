@@ -94,8 +94,8 @@ class pet:
         # call update after 10ms
         self.window.after(10, self.update)
 
-def play(self, filename):
-        winsound.PlaySound('Sounds/' + filename, winsound.SND_ALIAS | winsound.SND_ASYNC)
+    def play(self, filename):
+            winsound.PlaySound('Sounds/' + filename, winsound.SND_ALIAS | winsound.SND_ASYNC)
 
 if __name__ == "__main__":
     pet()
