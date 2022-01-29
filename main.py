@@ -1,7 +1,7 @@
 import tkinter as tk
 import time
 import winsound
-import pyautogui
+
 
 class pet:
     def __init__(self):
@@ -59,7 +59,6 @@ class pet:
         self.window.after(0, self.update)
         self.window.mainloop()
 
-
     def update(self):
         # move right by one pixel
         # self.x += 1
@@ -84,14 +83,13 @@ class pet:
         # give window to geometry manager (so it will appear)
         self.label.pack()
 
-    
-
         # call update after 10ms
         self.window.after(10, self.update)
 
-
     def play(self, filename):
-        winsound.PlaySound('Sounds/' + filename, winsound.SND_ALIAS | winsound.SND_ASYNC)
+        winsound.PlaySound(
+            "Sounds/" + filename, winsound.SND_ALIAS | winsound.SND_ASYNC
+        )
 
 
 pet()
