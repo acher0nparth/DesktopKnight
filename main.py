@@ -175,18 +175,12 @@ class pet:
                     self.state = "running_left"
             else:
                 self.state = "idle_right"
-                # if self.state == "idle_right":
-                #     self.state = "idle_left"
-                # else:
-                #     self.state = "idle_right"
         elif self.state == "running_left" or self.state == "running_right":
             if distance <= self.attack_distance:
                 if self.mouse_x < self.center[0]:
                     self.state = "attack_left"
-                    print("attack left set")
                 else:
                     self.state = "attack_right"
-                    print("attack right set")
             elif distance > self.chase_distance:
                 self.state = "idle_right"
             else:
@@ -196,16 +190,20 @@ class pet:
                     self.state = "running_left"
         else:
             if distance <= self.attack_distance:
-                print("attacking")
                 if self.aggro_curr < self.aggro:
                     self.aggro_curr += 1
                 else:
-                    print("cooldown reset")
-                    self.state = "idle_right"
                     self.aggro_curr = 0
                     self.cooldown_curr = 0
+                    if self.state == "attack_left":
+                        self.state = "idle_left"
+                    else:
+                        self.state = "idle_right"
             else:
-                self.state = "idle_right"
+                if self.state == "attack_left":
+                    self.state = "idle_left"
+                else:
+                    self.state = "idle_right"
         
             
 
