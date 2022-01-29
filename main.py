@@ -10,7 +10,7 @@ import math
 
 pathlib.Path(__file__).parent.resolve()
 
-pathname = ""
+pathname = "swamp/Lib/DesktopKnight/"
 
 
 class pet:
@@ -19,6 +19,8 @@ class pet:
         self.window = tk.Tk()
         # self.state = 0
         self.cycle = 0
+        self.aggro = 3
+        self.aggro_curr = 0
         # dictionary to hold gifs:
         # indexed 0-8, holds a tuple ([photoimage],num of frames)
         self.states = dict()
@@ -136,10 +138,44 @@ class pet:
 
     def change_state(self):
         # self.state = 0
-        self.state = random.choice(list(self.states))
+        #self.state = random.choice(list(self.states))
+        chase_distance = 1000
+        attack_distance = 200
+        distance = math.sqrt((self.mouse_x-self.x)**2 + (self.mouse_y-self.x)**2)
         if self.state == "idle_right" or self.state == "idle_left":
-            if math.sqrt(self.mouse_x** + self.mouse_y**) < 500:
-                if 
+            if distance < chase_distance:
+                if self.mouse_x > self.x:
+                    self.state = "running_right"
+                else:
+                    self.state = "running_left"
+            else:
+                if self.state == "idle_right":
+                    self.state = "idle_left"
+                else:
+                    self.state = "idle_right"
+        elif self.state == "running_left" or self.state == "running_right":
+            if distance < attack_distance:
+                if self.mouse_x < self.x:
+                    self.state = "attack_left"
+                else:
+                    self.state = "attack_right"
+            elif distance > chase_distance:
+                self.state = "idle_right"
+            else:
+                if self.mouse_x > self.x:
+                    self.state = "running_right"
+                else:
+                    self.state = "running_left"
+        else:
+            if distance < attack_distance:
+                if self.aggro_curr < self.aggro:
+                    self.aggro_curr += 1
+                else:
+                    self.state = "idle_right"
+                    self.aggro_curr = 0
+            else:
+                self.state = "idle_left"
+        
             
 
     def movement(self):
@@ -150,10 +186,19 @@ class pet:
         dx = self.mouse_x - self.x
         dy = self.mouse_y - self.y
         distance = math.sqrt(dx*dx + dy*dy)
-        dx /= distance
-        dy /= distance
-        self.x += round(dx)
-        self.y += round(dy)
+        
+        try:
+            dx /= distance
+        except ZeroDivisionError:
+            z=1
+        try:
+            dy /= distance
+        except ZeroDivisionError:
+            z=1
+            
+        if self.state == "running_left" or self.state == "running_right":
+            self.x += round(dx)
+            self.y += round(dy)
         
 
     def update(self):
@@ -166,11 +211,12 @@ class pet:
             self.img = self.states[self.state][0][self.frame_index]
 
         self.mouse_x, self.mouse_y = pyautogui.position()
-        self.movement()
+        
 
         if self.frame_index == 0:
             self.change_state()
 
+        self.movement()
         # create the window
         self.window.geometry(
             "{w}x{h}+{x}+{y}".format(
