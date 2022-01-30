@@ -1,5 +1,6 @@
 from concurrent.futures import thread
 import tkinter as tk
+# from mttkinter import mtTkinter as tk
 import time
 import random
 import winsound
@@ -12,7 +13,7 @@ import threading
 
 pathlib.Path(__file__).parent.resolve()
 
-pathname = "swamp/Lib/DesktopKnight/"
+pathname = ""
 
 
 class pet:
@@ -85,36 +86,6 @@ class pet:
             [
                 tk.PhotoImage(
                     file=pathname + "Images/attack_left.gif",
-                    format="gif -index %i" % (i),
-                )
-                for i in range(9)
-            ],
-            10,
-        )
-        self.states["dead_forward_left"] = (
-            [
-                tk.PhotoImage(
-                    file=pathname + "Images/dead_forward_left.gif",
-                    format="gif -index %i" % (i),
-                )
-                for i in range(8)
-            ],
-            9,
-        )
-        self.states["jump_left"] = (
-            [
-                tk.PhotoImage(
-                    file=pathname + "Images/jump_left.gif",
-                    format="gif -index %i" % (i),
-                )
-                for i in range(9)
-            ],
-            10,
-        )
-        self.states["jump_right"] = (
-            [
-                tk.PhotoImage(
-                    file=pathname + "Images/jump_right.gif",
                     format="gif -index %i" % (i),
                 )
                 for i in range(9)
@@ -308,6 +279,8 @@ class pet:
             and time.time() - self.lastMove > self.textTimer
         ):
             # questReminders.sendQuestTip(random.choice(self.textQuotes))
+        if self.prevMousePos == pyautogui.position() and time.time() - self.lastMove > self.textTimer:
+            questReminders.sendQuestTip(random.choice(self.textQuotes))
             self.prevMousePos = pyautogui.position()
             self.lastMove = time.time()
         elif self.prevMousePos != pyautogui.position():
