@@ -1,11 +1,9 @@
 from concurrent.futures import thread
 import tkinter as tk
-
-# from mttkinter import mtTkinter as tk
 import time
 import random
 import winsound
-#import questReminders
+import questReminders
 import math
 import pathlib
 import pyautogui
@@ -27,7 +25,7 @@ class pet:
         self.cooldown_curr = 30
         self.aggro = 12
         self.aggro_curr = 0
-        self.chase_distance = 600
+        self.chase_distance = 800
         self.attack_distance = 90
         self.exit_flag = False
         self.exit_frame = 0
@@ -103,15 +101,25 @@ class pet:
             ],
             9,
         )
-        self.states["summon_left"] = (
+        self.states["jump_left"] = (
             [
                 tk.PhotoImage(
-                    file=pathname + "Images/summon_left.gif",
+                    file=pathname + "Images/jump_left.gif",
                     format="gif -index %i" % (i),
                 )
-                for i in range(8)
+                for i in range(9)
             ],
-            9,
+            10,
+        )
+        self.states["jump_right"] = (
+            [
+                tk.PhotoImage(
+                    file=pathname + "Images/jump_right.gif",
+                    format="gif -index %i" % (i),
+                )
+                for i in range(9)
+            ],
+            10,
         )
         self.state = random.choice(list(self.states))
 
@@ -206,8 +214,8 @@ class pet:
 
         if self.cooldown_curr != self.cooldown:
             self.cooldown_curr += 1
-            self.state = "summon_left"
-        elif self.state == "summon_left" and self.cooldown_curr == self.cooldown:
+            #self.state = "jump_right"
+        elif self.state == "jump_right" and self.cooldown_curr == self.cooldown:
             self.state = "idle_right"
         elif self.state == "idle_right" or self.state == "idle_left":
             if distance < self.chase_distance:
@@ -235,13 +243,12 @@ class pet:
                 if self.aggro_curr < self.aggro:
                     self.aggro_curr += 1
                 else:
-                    self.state = "idle_right"
                     self.aggro_curr = 0
                     self.cooldown_curr = 0
                     if self.state == "attack_left":
-                        self.state = "idle_left"
+                        self.state = "jump_left"
                     else:
-                        self.state = "idle_right"
+                        self.state = "jump_right"
             else:
                 if self.state == "attack_left":
                     self.state = "idle_left"
