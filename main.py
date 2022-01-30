@@ -1,6 +1,5 @@
 from concurrent.futures import thread
 import tkinter as tk
-# from mttkinter import mtTkinter as tk
 import time
 import random
 import winsound
@@ -13,7 +12,7 @@ import threading
 
 pathlib.Path(__file__).parent.resolve()
 
-pathname = ""
+pathname = "swamp/Lib/DesktopKnight/"
 
 
 class pet:
@@ -86,6 +85,36 @@ class pet:
             [
                 tk.PhotoImage(
                     file=pathname + "Images/attack_left.gif",
+                    format="gif -index %i" % (i),
+                )
+                for i in range(9)
+            ],
+            10,
+        )
+        self.states["dead_forward_left"] = (
+            [
+                tk.PhotoImage(
+                    file=pathname + "Images/dead_forward_left.gif",
+                    format="gif -index %i" % (i),
+                )
+                for i in range(8)
+            ],
+            9,
+        )
+        self.states["jump_left"] = (
+            [
+                tk.PhotoImage(
+                    file=pathname + "Images/jump_left.gif",
+                    format="gif -index %i" % (i),
+                )
+                for i in range(9)
+            ],
+            10,
+        )
+        self.states["jump_right"] = (
+            [
+                tk.PhotoImage(
+                    file=pathname + "Images/jump_right.gif",
                     format="gif -index %i" % (i),
                 )
                 for i in range(9)
@@ -185,7 +214,7 @@ class pet:
 
         if self.cooldown_curr != self.cooldown:
             self.cooldown_curr += 1
-            # self.state = "jump_right"
+            #self.state = "jump_right"
         elif self.state == "jump_right" and self.cooldown_curr == self.cooldown:
             self.state = "idle_right"
         elif self.state == "idle_right" or self.state == "idle_left":
@@ -274,8 +303,11 @@ class pet:
 
         self.mouse_x, self.mouse_y = pyautogui.position()
 
-        if self.prevMousePos == pyautogui.position() and time.time() - self.lastMove > self.textTimer:
-            questReminders.sendQuestTip(random.choice(self.textQuotes))
+        if (
+            self.prevMousePos == pyautogui.position()
+            and time.time() - self.lastMove > self.textTimer
+        ):
+            # questReminders.sendQuestTip(random.choice(self.textQuotes))
             self.prevMousePos = pyautogui.position()
             self.lastMove = time.time()
         elif self.prevMousePos != pyautogui.position():
@@ -314,6 +346,7 @@ class pet:
             else:
                 self.exit_frame += 1
                 self.window.after(500, self.update)
+
 
     def play(self, filename):
         winsound.PlaySound(pathname + "Sounds/" + filename, winsound.SND_ALIAS)
