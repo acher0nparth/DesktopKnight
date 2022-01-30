@@ -274,11 +274,6 @@ class pet:
 
         self.mouse_x, self.mouse_y = pyautogui.position()
 
-        if (
-            self.prevMousePos == pyautogui.position()
-            and time.time() - self.lastMove > self.textTimer
-        ):
-            # questReminders.sendQuestTip(random.choice(self.textQuotes))
         if self.prevMousePos == pyautogui.position() and time.time() - self.lastMove > self.textTimer:
             questReminders.sendQuestTip(random.choice(self.textQuotes))
             self.prevMousePos = pyautogui.position()
