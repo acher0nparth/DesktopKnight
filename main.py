@@ -12,7 +12,7 @@ import threading
 
 pathlib.Path(__file__).parent.resolve()
 
-pathname = "swamp/Lib/DesktopKnight/"
+pathname = ""
 
 
 class pet:
@@ -214,7 +214,7 @@ class pet:
 
         if self.cooldown_curr != self.cooldown:
             self.cooldown_curr += 1
-            #self.state = "jump_right"
+            # self.state = "jump_right"
         elif self.state == "jump_right" and self.cooldown_curr == self.cooldown:
             self.state = "idle_right"
         elif self.state == "idle_right" or self.state == "idle_left":
@@ -307,7 +307,7 @@ class pet:
             self.prevMousePos == pyautogui.position()
             and time.time() - self.lastMove > self.textTimer
         ):
-            # questReminders.sendQuestTip(random.choice(self.textQuotes))
+            questReminders.sendQuestTip(random.choice(self.textQuotes))
             self.prevMousePos = pyautogui.position()
             self.lastMove = time.time()
         elif self.prevMousePos != pyautogui.position():
@@ -346,7 +346,6 @@ class pet:
             else:
                 self.exit_frame += 1
                 self.window.after(500, self.update)
-
 
     def play(self, filename):
         winsound.PlaySound(pathname + "Sounds/" + filename, winsound.SND_ALIAS)
